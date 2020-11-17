@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+<launch>
+    <include file="$(find morph_bringup)/launch/minimal.launch" />
+<include file="$(find andrea_ros)/launch/joystick_bringup.launch" />
+<include file="$(find morph_teleop)/launch/keyboard_teleop.launch" />
+
+</launch>
