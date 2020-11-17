@@ -1,0 +1,19 @@
+<launch>
+
+<arg name="stereo_sync" default="false" />
+<param name="use_sim_time" value="true"/>
+<node pkg="rosbag" type="play" name="bag_player"
+    args="--clock /home/marek/Downloads/Orbbag.bag"/>
+    
+    
+
+      <node pkg="image_undistort" type="stereo_undistort_node" name="stereo_image_proc">
+         <remap from="raw/first/image"    to="camera/fisheye1/image_raw"/>
+         <remap from="raw/first/camera_info"  to="camera/fisheye1/camera_info"/>
+         <remap from="raw/second/image"   to="camera/fisheye2/image_raw"/>
+         <remap from="raw/second/camera_info" to="camera/fisheye2/camera_info"/>
+      </node>   
+
+
+</launch>
+
