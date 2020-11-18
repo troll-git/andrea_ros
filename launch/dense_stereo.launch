@@ -1,0 +1,35 @@
+<launch>
+
+
+<param name="use_sim_time" value="true"/>
+<node pkg="rosbag" type="play" name="bag_player"
+   args="--clock /home/marek/Downloads/Orbbag.bag"/> 
+   
+<arg name="mav_name" default="ibis" />
+<arg name="namespace" default="$(arg mav_name)" />
+<arg name="process_every_nth_frame" default="1" />
+<arg name="stereo_params_camchain" default="$(find andrea_ros)/config/camchain-stereo_calibration.yaml"/>
+
+
+ 
+    <node name="dense_stereo" pkg="image_undistort" type="dense_stereo_node">
+      <param name="input_camera_info_from_ros_params" value = "true"/>
+      <param name="first_camera_namespace" value="cam0"/>
+      <param name="second_camera_namespace" value="cam1"/>
+      <param name="first_output_frame" value="cam0_rect"/>
+      <param name="second_output_frame" value="cam1_rect"/>
+      <param name="scale" value="1.0"/>
+      <param name="process_every_nth_frame" value="$(arg process_every_nth_frame)"/>
+      <param name="depth/use_sgbm" value="true"/>
+      <param name="depth/do_median_blur" value="false"/>
+      <param name="depth/use_mode_HH" value="true"/>
+      <rosparam file="$(arg stereo_params_camchain)"/>
+  
+      <remap from="raw/first/image" to="camera/fisheye1/image_raw"/>
+      <remap from="raw/second/image" to="camera/fisheye2/image_raw"/>
+      <remap from="raw/first/camera_info" to="camera/fisheye1/camera_info"/>
+      <remap from="raw/second/camera_info" to="camera/fisheye2/camera_info"/>
+    </node>
+
+
+</launch>

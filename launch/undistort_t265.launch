@@ -1,13 +1,31 @@
 <launch>
 
 <arg name="stereo_sync" default="false" />
-<!--<param name="use_sim_time" value="true"/>-->
-<!--<node pkg="rosbag" type="play" name="bag_player"
-   args="clock /home/andreacec/Orbbag.bag"/> -->
+<param name="use_sim_time" value="true"/>
+<node pkg="rosbag" type="play" name="bag_player"
+   args="--clock /home/marek/Downloads/Orbbag.bag"/> 
     
- <include file="$(find realsense2_camera)/launch/rs_t265.launch" />    
- <include file="$(find image_undistort)/launch/undistort_t265.launch" />    
 
+<arg name="first_camera_name" default="camera/fisheye1" />
+<arg name="second_camera_name" default="camera/fisheye2" />
+<arg name="scale" default="2.0" />
+<arg name="process_every_nth_frame" default="2" />
+<arg name="stereo_params_camchain" default="$(find andrea_ros)/config/camchain-stereo_calibration.yaml"/>
+
+
+
+  <node name="stereo_undistort" pkg="image_undistort" type="stereo_undistort_node">
+    <param name="input_camera_info_from_ros_params" value = "true"/>
+    <param name="first_camera_namespace" value="$(arg first_camera_name)"/>
+    <param name="second_camera_namespace" value="$(arg second_camera_name)"/>
+    <param name="scale" value="$(arg scale)"/>
+    <param name="process_every_nth_frame" value="$(arg process_every_nth_frame)"/>
+    
+    <rosparam file="$(arg stereo_params_camchain)"/>
+
+    <remap from="raw/first/image" to="$(arg first_camera_name)/image_raw"/>
+    <remap from="raw/second/image" to="$(arg second_camera_name)/image_raw"/>
+</node>
 
 </launch>
 
