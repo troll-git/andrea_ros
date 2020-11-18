@@ -1,17 +1,19 @@
 <launch>
 
 <arg name="stereo_sync" default="false" />
-<param name="use_sim_time" value="true"/>
+<!--<param name="use_sim_time" value="true"/>
 <node pkg="rosbag" type="play" name="bag_player"
-    args="--clock /home/marek/Downloads/Orbbag.bag"/>
-    
+    args= clock /home/andreacec/Orbbag.bag"/>-->
+
+
+ <include file="$(find realsense2_camera)/launch/rs_t265.launch" />    
     
 
       <node pkg="stereo_image_proc" type="stereo_image_proc" name="stereo_image_proc">
-         <remap from="raw/first/image"    to="camera/fisheye1/image_raw"/>
-         <remap from="raw/first/camera_info"  to="camera/fisheye1/camera_info"/>
-         <remap from="raw/second/image"   to="camera/fisheye2/image_raw"/>
-         <remap from="raw/second/camera_info" to="camera/fisheye2/camera_info"/>
+         <remap from="left/image_raw"    to="camera/fisheye1/image_raw"/>
+         <remap from="left/camera_info"  to="camera/fisheye1/camera_info"/>
+         <remap from="right/image_raw"   to="camera/fisheye2/image_raw"/>
+         <remap from="right/camera_info" to="camera/fisheye2/camera_info"/>
          <param name="disparity_range" value="128"/>
       </node>   
 

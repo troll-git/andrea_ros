@@ -1,11 +1,11 @@
 <launch>
 
 <arg name="stereo_sync" default="false" />
-<param name="use_sim_time" value="true"/>
-<node pkg="rosbag" type="play" name="bag_player"
-    args="--clock /home/marek/Downloads/Orbbag.bag"/>
+<!--<param name="use_sim_time" value="true"/>-->
+<!--<node pkg="rosbag" type="play" name="bag_player"
+   args="clock /home/andreacec/Orbbag.bag"/> -->
     
-    
+ <include file="$(find realsense2_camera)/launch/rs_t265.launch" />    
 
       <node pkg="image_undistort" type="stereo_undistort_node" name="stereo_image_proc">
          <remap from="raw/first/image"    to="camera/fisheye1/image_raw"/>
