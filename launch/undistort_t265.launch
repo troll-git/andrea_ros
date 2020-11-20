@@ -1,9 +1,11 @@
 <launch>
 
 <arg name="stereo_sync" default="false" />
-<param name="use_sim_time" value="true"/>
+<!--<param name="use_sim_time" value="true"/>
 <node pkg="rosbag" type="play" name="bag_player"
-   args="--clock /home/marek/Downloads/Orbbag.bag"/> 
+   args="clock /home/marek/Downloads/Orbbag.bag"/> -->
+   
+<include file="$(find realsense2_camera)/launch/rs_t265.launch" /> 
     
 
 <arg name="first_camera_name" default="camera/fisheye1" />
