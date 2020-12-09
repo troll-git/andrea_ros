@@ -3,7 +3,7 @@
 
 <param name="use_sim_time" value="true"/>
 <node pkg="rosbag" type="play" name="bag_player"
-   args="--clock /home/marek/Downloads/Orbbag.bag"/> 
+   args="--clock /home/andreacec/Orbbag.bag"/> 
    
 <arg name="mav_name" default="ibis" />
 <arg name="namespace" default="$(arg mav_name)" />

@@ -1,0 +1,21 @@
+<launch>
+
+<!--<include file="$(find realsense2_camera)/launch/rs_t265.launch" />-->
+<arg name="first_camera_name" default="camera/fisheye1" />
+<arg name="second_camera_name" default="camera/fisheye2" />
+<arg name="scale" default="2.0" />
+<arg name="process_every_nth_frame" default="2" />
+<arg name="node_start_delay" default="5.0" />  
+<node name="undistort_left" pkg="andrea_ros" type="camera_info_pub.py" output="screen">
+          <param name="~url" value="/home/andreacec/catkin_ws/src/andrea_ros/config/2322110487_left.yaml" />
+ <remap from="image" to="camera/fisheye1/image_raw"/>
+<remap from="camera_info" to="/camera/fisheye1/camera_info_calib"/>
+    </node>
+<node name="undistort_right" pkg="andrea_ros" type="camera_info_pub.py" output="screen">
+          <param name="~url" value="/home/andreacec/catkin_ws/src/andrea_ros/config/2322110487_right.yaml" />
+ <remap from="image" to="camera/fisheye2/image_raw"/>
+<remap from="camera_info" to="/camera/fisheye2/camera_info_calib"/>
+    </node>
+
+ 
+</launch>

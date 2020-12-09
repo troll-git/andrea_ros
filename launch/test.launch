@@ -9,20 +9,18 @@
     
 
 <arg name="first_camera_name" default="camera/fisheye1" />
-<arg name="second_camera_name" default="camera/fisheye2" />
 <arg name="scale" default="2.0" />
 <arg name="process_every_nth_frame" default="2" />
-<arg name="stereo_params_camchain" default="$(find andrea_ros)/config/pinhole.yaml"/>
 
 
 
   <node name="stereo_info_node" pkg="image_undistort" type="stereo_info_node">
-    <param name="input_camera_info_from_ros_params" value = "false"/>
+    <param name="input_camera_info_from_ros_params" value = "true"/>
 
     <param name="scale" value="$(arg scale)"/>
     <param name="process_every_nth_frame" value="$(arg process_every_nth_frame)"/>
     
-    <rosparam file="$(arg stereo_params_camchain)"/>
+   
 
     <remap from="raw/first/image" to="camera/fisheye1/image_raw"/>
     <remap from="raw/second/image" to="camera/fisheye2/image_raw"/>
@@ -31,4 +29,3 @@
 </node>
 
 </launch>
-
