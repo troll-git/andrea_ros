@@ -36,7 +36,7 @@
   <arg name="rviz_cfg"                default="$(find rtabmap_ros)/launch/config/rgbd.rviz" />
   
   <arg name="frame_id"                default="camera_link"/>     <!-- Fixed frame id, you may set "base_link" or "base_footprint" if they are published -->
-  <arg name="odom_frame_id"           default="camera_odom_frame"/>                <!-- If set, TF is used to get odometry instead of the topic -->
+  <arg name="odom_frame_id"           default="odom"/>                <!-- If set, TF is used to get odometry instead of the topic -->
   <arg name="map_frame_id"            default="map"/>
   <arg name="ground_truth_frame_id"   default=""/>     <!-- e.g., "world" -->
   <arg name="ground_truth_base_frame_id" default=""/>  <!-- e.g., "tracker", a fake frame matching the frame "frame_id" (but on different TF tree) -->
@@ -89,7 +89,7 @@
   <arg name="scan_cloud_max_points"   default="0"/>
   <arg name="scan_cloud_filtered"     default="false"/> <!-- use filtered cloud from icp_odometry for mapping -->
    
-  <arg name="visual_odometry"          default="false"/>          <!-- Launch rtabmap visual odometry node -->
+  <arg name="visual_odometry"          default="true"/>          <!-- Launch rtabmap visual odometry node -->
   <arg name="icp_odometry"             default="false"/>         <!-- Launch rtabmap icp odometry node -->
   <arg name="odom_topic"               default="odom"/>          <!-- Odometry topic name -->
   <arg name="vo_frame_id"              default="$(arg odom_topic)"/> <!-- Visual/Icp odometry frame ID for TF -->
@@ -246,6 +246,7 @@
           <param name="guess_min_rotation"          type="double" value="$(arg odom_guess_min_rotation)"/>
           <param name="expected_update_rate"        type="double" value="$(arg odom_expected_rate)"/>
           <param name="max_update_rate"             type="double" value="$(arg odom_max_rate)"/>
+          <param name="Vis/MaxDepth" type="string" value="3.5"/> <!-- odometry -->
         </node>
       </group>
     </group>

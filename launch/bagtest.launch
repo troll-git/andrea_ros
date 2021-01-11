@@ -1,7 +1,7 @@
 <launch>
   <param name="/use_sim_time" value="true"/>
   <!-- launch a bag -->
-<node pkg="rosbag" type="play" name="player" args="--clock /home/marek/Downloads/andrea.bag"/>
+<node pkg="rosbag" type="play" name="player" args="--clock /home/marek/Downloads/noodom.bag -r 0.5"/>
 <include file="$(find andrea_ros)/launch/rtabmap_main.launch" />
 
 <!--launch rviz-->
