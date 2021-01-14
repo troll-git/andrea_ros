@@ -3,7 +3,7 @@
     <include file="$(find morph_bringup)/launch/minimal.launch" />
 <include file="$(find andrea_ros)/launch/joystick_bringup.launch" />
 <include file="$(find andrea_ros)/launch/start_intel.launch" />
-<!--<node pkg="tf"  type="static_transform_publisher" name="camera2baselink" args="-2.66 -0.52 -1.6 0 0 0 base_link camera_pose_frame 100"/>-->
+<node pkg="tf"  type="static_transform_publisher" name="camera2baselink" args="-2.66 -0.52 -1.6 0 0 0 base_link camera_pose_frame 100"/>
 <include file="$(find andrea_ros)/launch/rtabmap_test3.launch" />
 </launch>
 
