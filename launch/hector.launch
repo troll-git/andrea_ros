@@ -1,0 +1,82 @@
+<launch>
+  <group ns="rtabmap">
+  
+   <arg name="left_image_topic"        default="/camera/fisheye1/image_raw" />
+  <arg name="right_image_topic"       default="/camera/fisheye2/image_raw" />      <!-- using grayscale image for efficiency -->
+  <arg name="left_camera_info_topic"  default="/camera/fisheye1/camera_info_calib" />
+  <arg name="right_camera_info_topic" default="/camera/fisheye2/camera_info_calib" />
+  <arg name="left_image_topic_relay"   default="$(arg left_image_topic)_relay"/>
+  <arg name="right_image_topic_relay"   default="$(arg right_image_topic)_relay"/>
+  <!-- decompressing images  -->
+  <node name="republish_left"  type="republish" pkg="image_transport" args="compressed in:=$(arg left_image_topic) raw out:=$(arg left_image_topic_relay)" />
+  <node name="republish_right" type="republish" pkg="image_transport" args="compressed in:=$(arg right_image_topic) raw out:=$(arg right_image_topic_relay)" />
+
+    <!-- Use RGBD synchronization -->
+    <!-- Here is a general example using a standalone nodelet, 
+         but it is recommended to attach this nodelet to nodelet 
+         manager of the camera to avoid topic serialization -->
+    <node pkg="nodelet" type="nodelet" name="stereo_sync" args="standalone rtabmap_ros/stereo_sync" output="screen">
+      <remap from="left/image_rect"   to="$(arg left_image_topic_relay)"/>
+          <remap from="right/image_rect"  to="$(arg right_image_topic_relay)"/>
+          <remap from="left/camera_info"  to="$(arg left_camera_info_topic)"/>
+          <remap from="right/camera_info" to="$(arg right_camera_info_topic)"/>
+
+          <param name="approx_sync"     type="bool"   value="false"/>
+          <param name="queue_size"      type="int"    value="10"/>
+      
+      <!-- Should be true for not synchronized camera topics 
+           (e.g., false for kinectv2, zed, realsense, true for xtion, kinect360)-->
+      <param name="approx_sync"       value="true"/> 
+    </node>
+    
+     <node pkg="rtabmap_ros" type="icp_odometry" name="icp_odometry" output="screen" >
+     <remap from="scan"      to="/jscan"/>
+     <remap from="odom"      to="/scanmatch_odom"/>
+     <remap from="odom_info"      to="/rtabmap/odom_info"/>
+	  
+     <param name="frame_id"        type="string" value="base_footprint"/>   
+     
+     <param name="Icp/PointToPlane"  type="string" value="true"/>
+     <param name="Icp/VoxelSize"     type="string" value="0.05"/>
+     <param name="Icp/Epsilon"       type="string" value="0.001"/>
+     <param name="Icp/PointToPlaneK"  type="string" value="5"/>
+     <param name="Icp/PointToPlaneRadius"  type="string" value="0.3"/>
+     <param name="Icp/MaxCorrespondenceDistance" type="string" value="0.1"/>
+     <param name="Icp/PM"             type="string" value="true"/> <!-- use libpointmatcher to handle PointToPlane with 2d scans-->
+     <param name="Icp/PMOutlierRatio" type="string" value="0.95"/>
+     <param name="Odom/Strategy"        type="string" value="0"/>
+     <param name="Odom/GuessMotion"     type="string" value="true"/>
+     <param name="Odom/ResetCountdown"  type="string" value="0"/>
+     <param name="Odom/ScanKeyFrameThr"  type="string" value="0.9"/>
+  </node>
+    
+
+    <node name="rtabmap" pkg="rtabmap_ros" type="rtabmap" output="screen" args="--delete_db_on_start -d --Rtabmap/ImagesAlreadyRectified false">
+          <param name="frame_id" type="string" value="base_link"/>
+
+          <param name="subscribe_depth" type="bool" value="false"/>
+          <param name="subscribe_stereo" type="bool" value="true"/>
+          <param name="subscribe_scan" type="bool" value="true"/>
+
+          <remap from="odom" to="/base_controller/odom"/>
+          <remap from="scan" to="/scan"/>
+          <!--<remap from="rgbd_image" to="rgbd_image"/>-->
+
+          <param name="queue_size" type="int" value="10"/>
+
+          <!-- RTAB-Map's parameters -->
+          <param name="RGBD/NeighborLinkRefining" type="string" value="true"/>
+          <param name="RGBD/ProximityBySpace"     type="string" value="true"/>
+          <param name="RGBD/AngularUpdate"        type="string" value="0.01"/>
+          <param name="RGBD/LinearUpdate"         type="string" value="0.01"/>
+          <param name="RGBD/OptimizeFromGraphEnd" type="string" value="false"/>
+          <param name="Grid/FromDepth"            type="string" value="false"/> <!-- occupancy grid from lidar -->
+          <param name="Reg/Force3DoF"             type="string" value="true"/>
+          <param name="Reg/Strategy"              type="string" value="1"/> <!-- 1=ICP -->
+          
+          <!-- ICP parameters -->
+          <param name="Icp/VoxelSize"                 type="string" value="0.05"/>
+          <param name="Icp/MaxCorrespondenceDistance" type="string" value="0.1"/>
+    </node>
+  </group>
+</launch>
